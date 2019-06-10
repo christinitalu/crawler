@@ -1,0 +1,28 @@
+import pandas as pd
+df=pd.read_csv("C:\\Users\\christinalu\\Desktop\\webSiteList.csv")
+
+from selenium import webdriver
+import re
+import time
+import random
+from selenium.webdriver.common.keys import Keys
+
+df["WebName"]=0
+
+#開起chrome瀏覽器
+driver = webdriver.Chrome('./chromedriver')
+driver.implicitly_wait(60)
+driver.get('https://www.google.com.tw/')
+
+for i in range(0,df.shape[0]):
+    elem = driver.find_element_by_name("q")
+    elem.clear()
+    elem.send_keys(df.loc[i,"WebSite"])
+    elem.send_keys(Keys.RETURN)
+    title=driver.find_element_by_class_name("LC20lb").text
+    df.loc[i,"WebName"]=title
+    driver.back()
+    time.sleep(random.uniform(0, 2))
+    print(i)
+    
+df.to_csv('C:/Users/christinalu/Desktop/webSiteList.csv')
